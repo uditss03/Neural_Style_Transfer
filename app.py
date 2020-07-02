@@ -33,7 +33,9 @@ def upload():
 
     return render_template("upload.html", content_name=content_name, style_name=style_name)
 
-
+@app.route("/style_transfer")
+def style_transfer():
+    return render_template("style_transfer.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

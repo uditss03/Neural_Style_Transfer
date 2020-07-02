@@ -26,7 +26,7 @@
 </form>
 -->
 <nav class="navbar navbar-light bg-dark">
-    <a class="text-white-50">Neural Style Transfer</a>
+    <a class="text-white-50"><strong>Neural Style Transfer</strong></a>
     <form class="form-inline" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
       <input class="form-control mr-sm-2" type="file" name="content_file" accept="image*" placeholder="file" aria-label="file">
       <input class="form-control mr-sm-2" type="file" name="style_file" accept="image*" placeholder="file" aria-label="file">
@@ -35,11 +35,36 @@
   </nav>
 
 
-<img src = "static/{{content_name}}" height="512" width="512">
-<img src = "static/{{style_name}}" height="512" width="512">
+<br><br><br>
+<div id="charts" class="container mt-3 text-center">
+                    
+    <!--top two charts--> 
+      
+    <div class="row">
+        <div class="col-6">
+            <div>
+                <img src = "static/{{content_name}}" height="512" width="512"><br><br>
+                <strong>Content Image</strong>
+            </div>
+        </div>
+        <div class="col-6">
+            <div>
+                <img src = "static/{{style_name}}" height="512" width="512"><br><br>
+                <strong>Style Image</strong>
+            </div>
+        </div>
+    </div>
+  
 
+          
+  </div><br><br>
 
+  <div class="mx-auto" style="width: 200px;">
 
+    <a href="style_transfer"><button class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Upload!">Create Style Image</button></a>
+  </div>
+
+  
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
         integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
         crossorigin="anonymous"></script>
