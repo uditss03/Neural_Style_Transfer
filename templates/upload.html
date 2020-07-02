@@ -12,6 +12,9 @@
 </head>
 <body>
 
+
+
+
 <!--<form id="upload-form" action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
     <strong>Content Image:</strong><br>
     <input id="file-picker" type="file" name="content_file" accept="image/*" multiple><br><br>
@@ -20,7 +23,6 @@
     <input id="file-picker" type="file" name="style_file" accept="image/*" multiple><br><br>
     <div id="msg"></div>
     <input type="submit" value="Upload!" id="upload-button">
-
 </form>
 -->
 <nav class="navbar navbar-light bg-dark">
@@ -31,6 +33,16 @@
       <button class="btn btn-outline-success my-2 my-sm-0" type="submit" value="Upload!">Upload</button>
     </form>
   </nav>
+
+
+<img src = "static/{{content_name}}" height="512" width="512">
+<img src = "static/{{style_name}}" height="512" width="512">
+
+
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
+        integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+        crossorigin="anonymous"></script>
 
 </body>
 
