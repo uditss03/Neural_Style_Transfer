@@ -17,8 +17,8 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # Variable Initialization
 imsize = 512
 image_folder = ''
-style_path = 'style.jpg'
-content_path = 'content.jpeg'
+#style_path = 'style.jpg'
+#content_path = 'content.jpeg'
 
 loader = transforms.Compose([transforms.Resize((imsize,imsize)), transforms.ToTensor()])
 
@@ -38,11 +38,18 @@ def imshow(tensor, title=None):
     plt.title(title)
   plt.pause(0.001)
 
-style_img = image_loader(style_path, imsize=imsize)
-content_img = image_loader(content_path, imsize=imsize)
+def save_img(path, image):
+  unloader = transforms.ToPILImage()
+  image = tensor.cpu().clone()
+  image = image.squeeze(0)
+  image = unloader(image)
+  image.save(path)
+
+#style_img = image_loader(style_path, imsize=imsize)
+#content_img = image_loader(content_path, imsize=imsize)
 
 
-assert (style_img.size() == content_img.size(),"same size of both image")
+#assert (style_img.size() == content_img.size(),"same size of both image")
 
 class ContentLoss(nn.Module):
   def __init__(self, target,):
@@ -134,14 +141,14 @@ def compute_loses(cnn ,normalization_mean, normalization_std, style_img, content
     return model, style_losses, content_losses
 
 
-input_img = content_img.clone()
+#input_img = content_img.clone()
 
 def compute_optimizer(input_img):
   optimizer = optim.LBFGS([input_img.requires_grad_()])
   return optimizer
 
 
-def run(cnn ,normalization_mean, normalization_std, style_img, content_img, content_layers=content_layers, style_layers=style_layers, num_steps = 300, style_weight=10000, content_weight = 1):
+def run(cnn ,normalization_mean, normalization_std, style_img, content_img, input_img, content_layers=content_layers, style_layers=style_layers, num_steps = 300, style_weight=10000, content_weight = 1):
   model, style_losses, content_losses = compute_loses(cnn ,normalization_mean, normalization_std, style_img, content_img, content_layers=content_layers, style_layers=style_layers)
   optimizer = compute_optimizer(input_img)
   print('optimizing')
@@ -164,11 +171,12 @@ def run(cnn ,normalization_mean, normalization_std, style_img, content_img, cont
       run[0]+=1
       if run[0] % 5 ==0:
         imshow(input_img, title='Output Image')
+        #save_img("static/result.img", input_img)
         
       if run[0] % 50 ==0:
         print("run {}".format(run))
         print('Style ',style_score.item(),' content ', content_score.item())
-        imshow(input_img, title='Output Image')
+        #imshow(input_img, title='Output Image')
         print()
       return style_score + content_score
     optimizer.step(closure)
@@ -177,4 +185,4 @@ def run(cnn ,normalization_mean, normalization_std, style_img, content_img, cont
   return input_img
 
 
-output = run(cnn ,cnn_normalization_mean, cnn_normalization_std, style_img, content_img, content_layers=content_layers, style_layers=style_layers, num_steps = 300, style_weight=10000, content_weight = 1)
+#output = run(cnn ,cnn_normalization_mean, cnn_normalization_std, style_img, content_img, input_img, content_layers=content_layers, style_layers=style_layers, num_steps = 300, style_weight=10000, content_weight = 1)
