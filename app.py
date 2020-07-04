@@ -14,7 +14,7 @@ import numpy as np
 
 import os
 from flask import Flask, render_template, request
-from style_transfer import image_loader, run
+from style_transfer import image_loader, run, save_img
 
 app = Flask(__name__)
 
@@ -79,13 +79,6 @@ def upload():
 def style_transfer():
     target_content = os.path.join(APP_ROOT, 'static/content/')
     target_style = os.path.join(APP_ROOT,'static/style/')
-    
-    target_img = os.path.join(APP_ROOT, 'static/result/')
-    if not os.path.isdir(target_img):
-        os.mkdir(target_img)
-    for f in os.listdir(target_img):
-        os.remove(os.path.join(target_img,f))
-    
 
     content_name = os.listdir(target_content)
     style_name = os.listdir(target_style)
@@ -97,7 +90,7 @@ def style_transfer():
     content_img = image_loader(content_path, imsize=512)
     input_img = content_img.clone()
 
-    #assert (style_img.size() == content_img.size(),"same size of both image")
+    assert (style_img.size() == content_img.size(),"same size of both image")
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -108,12 +101,12 @@ def style_transfer():
     content_layers = ['conv_4']
     style_layers = ['conv_1', 'conv_2', 'conv_3', 'conv_4', 'conv_5']
 
-    output = run(cnn ,cnn_normalization_mean, cnn_normalization_std, style_img, content_img, input_img, content_layers=content_layers, style_layers=style_layers, num_steps = 300, style_weight=10000, content_weight = 1)
-    #output.save(content_path+"/result.img")
-    
-    
+    output = run(cnn ,cnn_normalization_mean, cnn_normalization_std, style_img, content_img, input_img, content_layers=content_layers, style_layers=style_layers, num_steps = 50, style_weight=1000000, content_weight = 1)
 
-    return render_template("style_transfer.html")
+    target_path = os.path.join(APP_ROOT,'static/result/result.jpg')
+    
+    save_img(target_path, output)
+    return render_template("style_transfer.html", output_path = target_path)
 
 if __name__ == "__main__":
     app.run(debug=True)

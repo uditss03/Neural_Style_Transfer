@@ -38,9 +38,9 @@ def imshow(tensor, title=None):
     plt.title(title)
   plt.pause(0.001)
 
-def save_img(path, image):
+def save_img(path, img):
   unloader = transforms.ToPILImage()
-  image = tensor.cpu().clone()
+  image = img.cpu().clone()
   image = image.squeeze(0)
   image = unloader(image)
   image.save(path)
@@ -169,8 +169,8 @@ def run(cnn ,normalization_mean, normalization_std, style_img, content_img, inpu
       loss = style_score + content_score
       loss.backward()
       run[0]+=1
-      if run[0] % 5 ==0:
-        imshow(input_img, title='Output Image')
+      #if run[0] % 5 ==0:
+       # imshow(input_img, title='Output Image')
         #save_img("static/result.img", input_img)
         
       if run[0] % 50 ==0:
@@ -182,6 +182,7 @@ def run(cnn ,normalization_mean, normalization_std, style_img, content_img, inpu
     optimizer.step(closure)
 
   input_img.data.clamp(0,1)
+  
   return input_img
 
 
