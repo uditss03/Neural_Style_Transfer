@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-
+import time
 from PIL import Image
 import matplotlib.pyplot as plt
 
@@ -23,33 +23,7 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 @app.route("/")
 def index():
     return render_template("index.html")
-'''
-@app.route("/upload", methods=['POST'])
-def upload():
-    target = os.path.join(APP_ROOT, 'static/uploads')
-    if not os.path.isdir(target):
-        os.mkdir(target)
-    for f in os.listdir(target):
-        os.remove(os.path.join(target,f))
-    content_img = request.files.get("content_file")
-    style_img = request.files.get("style_file")
 
-    content_name = content_img.filename
-    style_name = style_img.filename
-
-    name,content_ext = os.path.splitext(content_name)
-    print(content_ext)
-    name,style_ext = os.path.splitext(style_name)
-    print(style_ext)
-    content_path = "/".join([target, content_name])
-    style_path = "/".join([target, style_name])
-    content_img.save(content_path)
-    style_img.save(style_path)
-
-    
-
-    return render_template("upload.html", content_name=content_name, style_name=style_name)
-'''
 
 @app.route("/upload", methods=['POST'])
 def upload():
@@ -74,6 +48,7 @@ def upload():
     content_img.save(content_path)
     style_img.save(style_path)
     return render_template("upload.html", content_name=content_name, style_name=style_name)
+
 
 @app.route("/style_transfer")
 def style_transfer():
@@ -103,10 +78,16 @@ def style_transfer():
 
     output = run(cnn ,cnn_normalization_mean, cnn_normalization_std, style_img, content_img, input_img, content_layers=content_layers, style_layers=style_layers, num_steps = 50, style_weight=1000000, content_weight = 1)
 
-    target_path = os.path.join(APP_ROOT,'static/result/result.jpg')
-    
+
+    for filename in os.listdir('static/result/'):
+        if filename.startswith('result'):  # not to remove other images
+            os.remove('static/result/' + filename)
+    filename = "result" + str(time.time()) + ".jpg"
+    target_path = os.path.join(APP_ROOT,"static/result/"+filename)
     save_img(target_path, output)
-    return render_template("style_transfer.html", output_path = target_path)
+    return render_template("style_transfer.html", image_name = filename)
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
