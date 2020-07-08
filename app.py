@@ -42,6 +42,12 @@ def upload():
 
     content_name = content_img.filename
     style_name = style_img.filename
+    
+    #solving memory cache 
+    name = content_name.split(".")
+    content_name = name[0]+str(time.time()) + name[1]
+    name = style_name.split(".")
+    style_name = name[0]+str(time.time()) + name[1] 
 
     content_path = "/".join([target_content, content_name])
     style_path = "/".join([target_style, style_name])
@@ -78,7 +84,7 @@ def style_transfer():
 
     output = run(cnn ,cnn_normalization_mean, cnn_normalization_std, style_img, content_img, input_img, content_layers=content_layers, style_layers=style_layers, num_steps = 50, style_weight=1000000, content_weight = 1)
 
-
+    #solving memory cache
     for filename in os.listdir('static/result/'):
         if filename.startswith('result'):  # not to remove other images
             os.remove('static/result/' + filename)
